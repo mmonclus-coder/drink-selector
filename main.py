@@ -62,12 +62,9 @@ def validate_token():
 
 
 
-
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
-
-
 
 
 
