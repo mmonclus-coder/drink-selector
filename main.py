@@ -8,8 +8,11 @@ from datetime import datetime
 from flask import send_file
 import random
 from datetime import datetime, timedelta
+import json
 
-tokens = load_tokens()
+
+
+
  # Stores token data like: {'482951': {'machine': 'DN501E', 'slots': 9, 'expires': ...}}
 
 machine_slot_counts = {
@@ -20,7 +23,7 @@ machine_slot_counts = {
 
 app = Flask(__name__, template_folder='templates')
 
-import json
+
 
 TOKEN_FILE = "tokens.json"
 
@@ -34,6 +37,7 @@ def save_tokens(data):
     with open(TOKEN_FILE, "w") as f:
         json.dump(data, f)
 
+tokens = load_tokens()
 
 @app.route('/generate_token', methods=['POST'])
 def generate_token():
