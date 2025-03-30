@@ -1,32 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Drink Selection</title>
   <style>
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+      margin: 0;
+    }
+  
+    h2, h3 {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+  
+    input, button {
+      font-size: 1em;
+      padding: 10px;
+      width: 100%;
+      max-width: 300px;
+      margin: 5px auto;
+      display: block;
+    }
+  
     .slot {
-      width: 120px;
-      height: 150px;
+      width: 100px;
+      height: 120px;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
       background-color: #f9f9f9;
       border: 2px dashed #ccc;
-      margin: 10px;
+      margin: 10px auto;
       display: inline-block;
       cursor: pointer;
     }
-
+  
     #slots-container {
-      margin-bottom: 20px;
+      margin: 20px auto;
+      text-align: center;
     }
-
-    #drinkModal h4 {
-      margin-top: 0;
+  
+    form {
+      text-align: center;
+    }
+  
+    img {
+      max-width: 150px;
+      height: auto;
     }
   </style>
+
 </head>
 <body>
   <div style="text-align: center; margin-top: 20px;">
@@ -35,13 +60,13 @@
   </div>
 
 
-  <div id="tokenSection">
+  <div id="tokenSection" style="text-align: center;">
     <h3>Enter Your Access Token</h3>
     <input type="text" id="accessToken" placeholder="6-digit token">
     <button onclick="checkToken()">Submit Token</button>
   </div>
 
-  <div id="selectionSection" style="display:none;">
+  <div id="selectionSection" style="display:none; text-align: center;">
     <div id="slots-container"></div>
 
     <form id="drinkForm">
