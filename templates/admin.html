@@ -1,18 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin - Token Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      margin: 0;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.4em;
+    }
+
+    input, select, button {
+      font-size: 1em;
+      padding: 10px;
+      width: 90%;
+      max-width: 300px;
+      margin: 10px auto;
+      display: block;
+    }
+
+    .token-box {
+      background: #f4f4f4;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-top: 20px;
+      display: inline-block;
+      text-align: left;
+      max-width: 90%;
+      word-wrap: break-word;
+    }
+  </style>
 </head>
 <body>
-  <h2>Generate Access Token</h2>
-  <form action="/generate_token" method="POST">
-    <label>Select Machine:</label><br>
-    <select name="machine">
-      <option value="DN501E">DN501E (9 slots)</option>
-      <option value="Summit 300">Summit 300 (6 slots)</option>
-      <option value="Royal 660">Royal 660 (8 slots)</option>
-    </select><br><br>
+  <img src="/static/logo.png" alt="Logo" style="max-width: 180px; height: auto; margin-bottom: 10px;">
+  <h2>Admin Token Generator</h2>
+
+  <form method="POST" action="/generate_token">
+    <label for="machine">Select Machine Type:</label>
+    <select id="machine" name="machine" required>
+      <option value="DN501E">DN501E</option>
+      <option value="Summit 300">Summit 300</option>
+      <option value="Royal 660">Royal 660</option>
+    </select>
+
     <button type="submit">Generate Token</button>
   </form>
+
+  {% if token %}
+    <div class="token-box">
+      <strong>Token:</strong> {{ token }}<br>
+      <strong>Machine:</strong> {{ machine }}<br>
+      <strong>Slots:</strong> {{ slots }}<br>
+      <strong>Expires:</strong> {{ expires }}
+    </div>
+  {% endif %}
 </body>
 </html>
+
