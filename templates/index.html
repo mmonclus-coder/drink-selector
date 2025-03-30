@@ -120,9 +120,20 @@ const drinks = [
 
     let slots = [];  // Declare globally so you can use it on form submit
 
-  function generateDrinkSlots(slotCount) {
-    slots = new Array(slotCount).fill(null);
-  }
+function generateDrinkSlots(slotCount) {
+  slots = new Array(slotCount).fill(null);
+  const container = document.getElementById('slots-container');
+  container.innerHTML = ''; // clear previous
+
+  slots.forEach((_, index) => {
+    const slotDiv = document.createElement('div');
+    slotDiv.className = 'slot';
+    slotDiv.dataset.index = index;
+    slotDiv.onclick = () => showDrinkOptions(index, slotDiv);
+    container.appendChild(slotDiv);
+  });
+}
+
 
 
 
