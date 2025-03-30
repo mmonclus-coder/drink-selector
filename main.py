@@ -65,8 +65,8 @@ def validate_token():
 
 @app.route('/admin')
 def admin():
-    print("✅ Admin route hit")
-    return "<h1>Admin route is working!</h1>"
+    return render_template('admin.html')
+
 
 
 
