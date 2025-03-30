@@ -55,11 +55,9 @@
 
 
   <script>
-
-
     function checkToken() {
-      const token = document.getElementById('accessToken').value;
-
+      const token = document.getElementById('accessToken').value.trim();
+  
       fetch('/validate_token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,16 +68,20 @@
         return res.json();
       })
       .then(data => {
+        console.log("✅ Token valid:", data);
+  
         document.getElementById('tokenSection').style.display = 'none';
         document.getElementById('selectionSection').style.display = 'block';
-
-        // Call your slot generation logic here with data.slots
-        generateDrinkSlots(data.slots);
+  
+        generateDrinkSlots(data.slots);  // make sure this is defined
       })
       .catch(err => {
+        console.error("❌ Token error:", err);
         alert('Invalid or expired token.');
       });
-    }
+  }
+
+
 
 
     const drinks = [
