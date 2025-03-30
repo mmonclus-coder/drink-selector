@@ -89,7 +89,22 @@
       { name: 'Dr Pepper', img: '/static/pepper.jpg' }
     ];
 
-    const slots = new Array(8).fill(null);
+    let slots = [];  // Declare globally so you can use it on form submit
+
+  function generateDrinkSlots(slotCount) {
+    slots = new Array(slotCount).fill(null);
+    const container = document.getElementById('slots-container');
+    container.innerHTML = ''; // Clear any previous slots
+
+    slots.forEach((_, index) => {
+      const slotDiv = document.createElement('div');
+      slotDiv.className = 'slot';
+      slotDiv.dataset.index = index;
+      slotDiv.onclick = () => showDrinkOptions(index, slotDiv);
+      container.appendChild(slotDiv);
+    });
+  }
+
     const container = document.getElementById('slots-container');
 
     slots.forEach((_, index) => {
