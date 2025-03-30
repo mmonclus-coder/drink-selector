@@ -29,6 +29,11 @@
   </style>
 </head>
 <body>
+  <div style="text-align: center; margin-top: 20px;">
+    <img src="/static/logo.png" alt="Company Logo" style="max-width: 200px; height: auto;">
+    <h2 style="margin-top: 10px;">Select Drinks for Your Vending Machine</h2>
+  </div>
+
 
   <div id="tokenSection">
     <h3>Enter Your Access Token</h3>
@@ -46,10 +51,6 @@
   </div>
 
 
-  <div style="text-align: center; margin-bottom: 20px;">
-    <img src="/static/logo.png" alt="Company Logo" style="max-width: 200px; height: auto;">
-  </div>
-  <h2>Select Drinks for Your Vending Machine</h2>
 
 
 
@@ -82,11 +83,46 @@
 
 
     const drinks = [
-      { name: 'Coca Cola', img: '/static/coke.jpg' },
-      { name: 'Sprite', img: '/static/sprite.jpg' },
-      { name: 'Pepsi', img: '/static/pepsi.jpg' },
-      { name: 'Ginger Ale', img: '/static/ginger.jpg' },
-      { name: 'Dr Pepper', img: '/static/pepper.jpg' }
+      { name: 'Coca Cola 12z', img: '/static/coke.jpg' },
+      { name: 'Sprite 12z', img: '/static/sprite.jpg' },
+      { name: 'Pepsi 12z', img: '/static/pepsi.jpg' },
+      { name: 'Ginger Ale 12z', img: '/static/ginger.jpg' },
+      { name: 'Dr Pepper 12z', img: '/static/drpepper.jpg' }
+
+      { name: 'Apple Juice', img: '/static/applejuice.jpg' }
+      { name: 'Arizona Iced Tea', img: '/static/arizona.jpg' }
+      { name: 'Celsius', img: '/static/celsius.jpg' }
+      { name: 'Coke Zero 12z', img: '/static/cokezero.jpg' }
+      { name: 'La Croix', img: '/static/croix.jpg' }
+      { name: 'Dasani 20z', img: '/static/dasani.jpg' }
+      { name: 'Diet Pepsi', img: '/static/dietpepsi.jpg' }
+      { name: 'Fanta Orange 12z', img: '/static/fanta.jpg' }
+      { name: 'Fanta Orange 20z', img: '/static/fanta20.jpg' }
+      { name: 'Grape Soda 12z', img: '/static/fantagrape.jpg' }
+      
+      { name: 'Gatorade Blue', img: '/static/gatoradeblue.jpg' }
+      { name: 'Gatorade Red', img: '/static/gatoradered.jpg' }
+      { name: 'Gatorade Orange', img: '/static/gatoradeorange.jpg' }
+      { name: 'Starbucks Coffee Mocha', img: '/static/mocha.jpg' }
+
+      { name: 'Monster', img: '/static/monster.jpg' }
+      { name: 'Mountain Dew 12z', img: '/static/mtndew.jpg' }
+      { name: 'Orange Juice', img: '/static/orangejuice.jpg' }
+
+      { name: 'Pellegrino', img: '/static/Pellegrino.jpg' }
+      { name: 'Poland Spring 16.9z', img: '/static/poland16.jpg' }
+      { name: 'Poland Spring 20z', img: '/static/poland20.jpg' }
+
+      { name: 'Poppi', img: '/static/poppi.jpg' }
+      { name: 'Prime', img: '/static/prime.jpg' }
+      { name: 'Red Bull 8.4z', img: '/static/redbull8.jpg' }
+
+      { name: 'Seltzer CD 12z', img: '/static/seltzercd.jpg' }
+      { name: 'Snapple', img: '/static/snapple.jpg' }
+      { name: 'Spindrift', img: '/static/spindrift.jpg' }
+
+      { name: 'Vitamin Water 20z', img: '/static/vitamin.jpg' }
+      
     ];
 
     let slots = [];  // Declare globally so you can use it on form submit
