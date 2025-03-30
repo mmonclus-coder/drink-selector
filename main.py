@@ -9,7 +9,8 @@ from flask import send_file
 import random
 from datetime import datetime, timedelta
 
-tokens = {}  # Stores token data like: {'482951': {'machine': 'DN501E', 'slots': 9, 'expires': ...}}
+tokens = load_tokens()
+ # Stores token data like: {'482951': {'machine': 'DN501E', 'slots': 9, 'expires': ...}}
 
 machine_slot_counts = {
     'DN501E': 9,
@@ -19,6 +20,19 @@ machine_slot_counts = {
 
 app = Flask(__name__, template_folder='templates')
 
+import json
+
+TOKEN_FILE = "tokens.json"
+
+def load_tokens():
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_tokens(data):
+    with open(TOKEN_FILE, "w") as f:
+        json.dump(data, f)
 
 
 @app.route('/generate_token', methods=['POST'])
@@ -31,8 +45,10 @@ def generate_token():
     tokens[token] = {
         'machine': machine,
         'slots': slots,
-        'expires': expires
+        'expires': expires.isoformat()  # convert datetime to string
     }
+
+    save_tokens(tokens)
 
     return f"""
     <h3>✅ Token Created</h3>
@@ -42,8 +58,10 @@ def generate_token():
     <p><strong>Expires:</strong> {expires.strftime('%B %d, %Y at %I:%M %p')}</p>
     """
 
+
 @app.route('/validate_token', methods=['POST'])
 def validate_token():
+    tokens = load_tokens()  # Load latest on every request
     data = request.json
     token = data.get('token')
 
@@ -51,7 +69,9 @@ def validate_token():
         return {'valid': False, 'message': 'Invalid token'}, 400
 
     token_data = tokens[token]
-    if datetime.now() > token_data['expires']:
+    expires = datetime.fromisoformat(token_data['expires'])
+
+    if datetime.now() > expires:
         return {'valid': False, 'message': 'Token expired'}, 400
 
     return {
@@ -59,6 +79,7 @@ def validate_token():
         'machine': token_data['machine'],
         'slots': token_data['slots']
     }
+
 
 
 
