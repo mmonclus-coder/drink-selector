@@ -126,34 +126,40 @@ def generate_pdf(name, layout, filename, submitted_at):
 
     # Title and name
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, 750, "Vending Machine Drink Selections")
+    c.drawString(50, 750, "Vending Machine Drink Selections")
     c.setFont("Helvetica", 12)
-    c.drawString(100, 735, f"Customer Name: {name}")
+    c.drawString(50, 735, f"Customer Name: {name}")
 
     # Submission time (top right)
     c.setFont("Helvetica", 10)
     c.drawRightString(550, 750, f"Submitted: {submitted_at}")
 
-    # Drink slots
-    y = 700
-    c.setFont("Helvetica-Bold", 12)
+    # Setup grid positions
+    start_y = 700
+    row_height = 70
+    text_x = 50
+    image_x = 350
+    image_size = 50
 
     for i, item in enumerate(layout):
-        drink = item['name'] if item else "Empty"
-        c.drawString(100, y, f"Slot {i + 1}: {drink}")
+        y = start_y - i * row_height
+        drink_name = item['name'] if item else "Empty"
 
-        # Draw image if available
+        # Left column: Slot and name
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(text_x, y, f"Slot {i + 1}: {drink_name}")
+
+        # Right column: Image
         if item and item.get('img'):
             try:
-                image_path = item['img'].replace("/static/", "static/")  # Convert to relative path
+                image_path = item['img'].replace("/static/", "static/")
                 image = ImageReader(image_path)
-                c.drawImage(image, 400, y - 10, width=50, height=50, preserveAspectRatio=True)
+                c.drawImage(image, image_x, y - 10, width=image_size, height=image_size, preserveAspectRatio=True)
             except Exception as e:
-                print(f"⚠️ Error loading image for {drink}: {e}")
-
-        y -= 60  # Add extra space for image
+                print(f"⚠️ Error loading image for slot {i + 1}: {e}")
 
     c.save()
+
 
 
 def send_email(name, customer_email, file_path):
