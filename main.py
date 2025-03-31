@@ -10,7 +10,7 @@ from gmail_auth import send_message  # Ensure this file is created correctly
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'something_secret_and_random'
-ADMIN_PASSWORD = "mvs0429"
+ADMIN_PASSWORD = "1326"
 
 TOKEN_FILE = "tokens.json"
 machine_slot_counts = {
