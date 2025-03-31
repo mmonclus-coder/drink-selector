@@ -2,9 +2,8 @@
 <html>
 <head>
   <title>Admin - Token Generator</title>
-  <style>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <style>
     body {
       font-family: "Calibri", "Segoe UI", Arial, sans-serif;
       font-weight: bold;
@@ -18,7 +17,7 @@
       margin-bottom: 20px;
     }
 
-    label, select, button {
+    label, select, button, input {
       font-family: "Calibri", "Segoe UI", Arial, sans-serif;
       font-weight: bold;
       font-size: 1em;
@@ -28,7 +27,7 @@
       max-width: 300px;
     }
 
-    select {
+    select, input {
       padding: 10px;
     }
 
@@ -50,17 +49,24 @@
   </style>
 </head>
 <body>
-  <h2>Generate Access Token</h2>
-  <form action="/generate_token" method="POST">
-    <label for="machine">Select Machine:</label>
-    <select name="machine" id="machine">
-      <option value="DN501E">DN501E (9 slots)</option>
-      <option value="Summit 300">Summit 300 (6 slots)</option>
-      <option value="Royal 660">Royal 660 (8 slots)</option>
-    </select>
-    <button type="submit">Generate Token</button>
+  <h2>Admin Access</h2>
+  <form method="POST">
+    <label for="password">Enter Admin Code:</label>
+    <input type="tel" name="password" pattern="[0-9]*" inputmode="numeric" placeholder="4-digit access code" required>
+    <button type="submit">Unlock Token Generator</button>
   </form>
+
+  {% if access_granted %}
+    <h2>Generate Access Token</h2>
+    <form action="/generate_token" method="POST">
+      <label for="machine">Select Machine:</label>
+      <select name="machine" id="machine">
+        <option value="DN501E">DN501E (9 slots)</option>
+        <option value="Summit 300">Summit 300 (6 slots)</option>
+        <option value="Royal 660">Royal 660 (8 slots)</option>
+      </select>
+      <button type="submit">Generate Token</button>
+    </form>
+  {% endif %}
 </body>
 </html>
-
-
