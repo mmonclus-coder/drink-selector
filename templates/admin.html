@@ -18,7 +18,7 @@
     }
 
     label, select, button, input {
-      font-family: "Calibri", "Segoe UI", Arial, sans-serif;
+      font-family: inherit;
       font-weight: bold;
       font-size: 1em;
       margin: 10px auto;
@@ -46,17 +46,26 @@
     form {
       margin-top: 30px;
     }
+
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
-  <h2>Admin Access</h2>
-  <form method="POST">
-    <label for="password">Enter Admin Code:</label>
-    <input type="tel" name="password" pattern="[0-9]*" inputmode="numeric" placeholder="4-digit access code" required>
-    <button type="submit">Unlock Token Generator</button>
-  </form>
 
-  {% if show_form %}
+  {% if not show_form %}
+    <h2>Admin Access</h2>
+    <form method="POST">
+      <label for="password">Enter Admin Code:</label>
+      <input type="tel" name="password" pattern="[0-9]*" inputmode="numeric" placeholder="4-digit access code" required>
+      <button type="submit">Unlock Token Generator</button>
+      {% if error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+    </form>
+  {% else %}
     <h2>Generate Access Token</h2>
     <form action="/generate_token" method="POST">
       <label for="machine">Select Machine:</label>
@@ -68,5 +77,6 @@
       <button type="submit">Generate Token</button>
     </form>
   {% endif %}
+
 </body>
 </html>
