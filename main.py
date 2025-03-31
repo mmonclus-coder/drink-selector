@@ -81,6 +81,7 @@ def admin():
         password = request.form.get('password')
         if password == ADMIN_PASSWORD:
             session['authenticated'] = True
+            return redirect(url_for('admin'))  # ✅ redirect to reload page in GET mode
         else:
             return render_template('admin.html', error="Incorrect password", show_form=False)
 
