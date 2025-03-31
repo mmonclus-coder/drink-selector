@@ -130,19 +130,14 @@ def generate_pdf(name, layout, filename, submitted_at):
     c.save()
 
 
+from gmail_auth import send_message  # Make sure you create this module as explained earlier
+
 def send_email(name, customer_email, file_path):
-    msg = EmailMessage()
-    msg['Subject'] = f'Drink Layout - {name}'
-    msg['From'] = 'sales@monclusvs.com'
-    msg['To'] = [customer_email, 'sales@monclusvs.com']  # Send to both
-    msg.set_content(f'Drink layout for {name} is attached.')
+    subject = f'Drink Layout - {name}'
+    body = f'Drink layout for {name} is attached.'
 
-    with open(file_path, 'rb') as f:
-        msg.add_attachment(f.read(), maintype='application', subtype='pdf', filename=file_path)
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login('sales@monclusvs.com', 'Sales12345!!!')  # Replace with real app password
-        smtp.send_message(msg)
+    recipients = [customer_email, 'sales@monclusvs.com']
+    send_message('sales@monclusvs.com', recipients, subject, body, file_path)
 
 
 
