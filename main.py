@@ -9,6 +9,7 @@ from flask import send_file
 import random
 from datetime import datetime, timedelta
 import json
+import pytz
 
 
 
@@ -84,12 +85,20 @@ def validate_token():
         'slots': token_data['slots']
     }
 
+from flask import Response
 
-
+ADMIN_PASSWORD = "0429"  # 🔐 Set your desired password
 
 @app.route('/admin')
 def admin():
+    auth = request.authorization
+    if not auth or auth.password != ADMIN_PASSWORD:
+        return Response(
+            'Unauthorized', 401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'}
+        )
     return render_template('admin.html')
+
 
 @app.route('/thankyou')
 def thankyou():
@@ -107,9 +116,12 @@ def submit():
     name = data['name']
     email = data['email']
     layout = data['layout']
-    submitted_at = datetime.now().strftime('%B %d, %Y at %I:%M %p')
+    eastern = pytz.timezone('US/Eastern')
+    submitted_at = datetime.now(eastern).strftime('%B %d, %Y at %I:%M %p')
 
-    pdf_filename = f"{name.replace(' ', '_')}_layout.pdf"
+
+    pdf_filename = f"Vending Machine Drink Selections - {name.replace(' ', '_')}.pdf"
+
     generate_pdf(name, layout, pdf_filename, submitted_at)
 
     send_email(name, email, pdf_filename)
@@ -120,8 +132,11 @@ def submit():
 
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
-    c.drawString(100, 750, f"Drink Layout for {name}")
-    c.drawString(100, 730, f"Submitted on: {submitted_at}")
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(100, 750, f"Vending Machine Drink Selections: {name}")
+    c.drawRightString(500, 750, f"Submitted: {submitted_at}")
+
+    
     y = 700
     for i, item in enumerate(layout):
         drink = item['name'] if item else "Empty"
@@ -133,11 +148,26 @@ def generate_pdf(name, layout, filename, submitted_at):
 from gmail_auth import send_message  # Make sure you create this module as explained earlier
 
 def send_email(name, customer_email, file_path):
-    subject = f'Drink Layout - {name}'
-    body = f'Drink layout for {name} is attached.'
+from gmail_auth import send_message
 
+def send_email(name, customer_email, file_path):
+    subject = "Drink Selections - Vending Machine(s)"
+    body = f"""Hi {name},
+
+Please find attached your drink selections. We will deliver one(1) case per selection along the vending machine/s that you have purchased.
+
+Thank you for your business!
+
+Sincerely,
+
+Sales Team  
+Monclus Vending Services LLC  
+184-10 Jamaica Avenue, Jamaica, NY 11423  
+347-757-7939
+"""
     recipients = [customer_email, 'sales@monclusvs.com']
     send_message('sales@monclusvs.com', recipients, subject, body, file_path)
+
 
 
 
