@@ -56,7 +56,7 @@
     <button type="submit">Unlock Token Generator</button>
   </form>
 
-  {% if access_granted %}
+  {% if show_form %}
     <h2>Generate Access Token</h2>
     <form action="/generate_token" method="POST">
       <label for="machine">Select Machine:</label>
