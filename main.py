@@ -102,13 +102,17 @@ def home():
 def submit():
     data = request.json
     name = data['name']
+    email = data['email']
     layout = data['layout']
     submitted_at = datetime.now().strftime('%B %d, %Y at %I:%M %p')
 
     pdf_filename = f"{name.replace(' ', '_')}_layout.pdf"
     generate_pdf(name, layout, pdf_filename, submitted_at)
 
+    send_email(name, email, pdf_filename)
+
     return send_file(pdf_filename, as_attachment=True)
+
 
 
 def generate_pdf(name, layout, filename, submitted_at):
@@ -123,19 +127,21 @@ def generate_pdf(name, layout, filename, submitted_at):
     c.save()
 
 
-def send_email(name, file_path):
+def send_email(name, customer_email, file_path):
     msg = EmailMessage()
     msg['Subject'] = f'Drink Layout - {name}'
-    msg['From'] = 'mmonclus@monclusvs.com'         # Change this
-    msg['To'] = 'miguelmonclus@live.com'    # Change this
+    msg['From'] = 'sales@monclusvs.com'
+    msg['To'] = [customer_email, 'sales@monclusvs.com']  # Send to both
     msg.set_content(f'Drink layout for {name} is attached.')
 
     with open(file_path, 'rb') as f:
         msg.add_attachment(f.read(), maintype='application', subtype='pdf', filename=file_path)
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login('your_email@example.com', 'your_app_password')  # Replace with app password
+        smtp.login('your_email@example.com', 'your_app_password')  # Replace with real app password
         smtp.send_message(msg)
+
+
 
 print("Server running. Available templates:", os.listdir("templates"))
 
