@@ -1,55 +1,23 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file, session
 import os
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-import smtplib
-from email.message import EmailMessage
-from datetime import datetime
-from flask import send_file
 import random
-from datetime import datetime, timedelta
 import json
 import pytz
+from datetime import datetime, timedelta
+from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-from flask import Response
-from flask import session  # make sure this is imported at the top
+from gmail_auth import send_message  # Ensure this file is created correctly
 
+app = Flask(__name__, template_folder='templates')
+app.secret_key = 'something_secret_and_random'
+ADMIN_PASSWORD = "mvs0429"
 
-def generate_pdf(name, layout, filename, submitted_at):
-    c = canvas.Canvas(filename, pagesize=letter)
-
-    # Title line
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, 750, f"Vending Machine Drink Selections: {name}")
-
-    # Submission time (right-aligned)
-    c.setFont("Helvetica", 10)
-    c.drawRightString(550, 735, f"Submitted: {submitted_at}")
-
-    # Drink slots
-    y = 700
-    c.setFont("Helvetica-Bold", 12)
-    for i, item in enumerate(layout):
-        drink = item['name'] if item else "Empty"
-        c.drawString(100, y, f"Slot {i + 1}: {drink}")
-        y -= 25
-
-    c.save()
-
-
- # Stores token data like: {'482951': {'machine': 'DN501E', 'slots': 9, 'expires': ...}}
-
+TOKEN_FILE = "tokens.json"
 machine_slot_counts = {
     'DN501E': 9,
     'Summit 300': 6,
     'Royal 660': 8
 }
-
-app = Flask(__name__, template_folder='templates')
-
-
-TOKEN_FILE = "tokens.json"
 
 def load_tokens():
     if os.path.exists(TOKEN_FILE):
@@ -73,7 +41,7 @@ def generate_token():
     tokens[token] = {
         'machine': machine,
         'slots': slots,
-        'expires': expires.isoformat()  # convert datetime to string
+        'expires': expires.isoformat()
     }
 
     save_tokens(tokens)
@@ -86,10 +54,9 @@ def generate_token():
     <p><strong>Expires:</strong> {expires.strftime('%B %d, %Y at %I:%M %p')}</p>
     """
 
-
 @app.route('/validate_token', methods=['POST'])
 def validate_token():
-    tokens = load_tokens()  # Load latest on every request
+    tokens = load_tokens()
     data = request.json
     token = data.get('token')
 
@@ -108,11 +75,6 @@ def validate_token():
         'slots': token_data['slots']
     }
 
-
-
-app.secret_key = 'something_secret_and_random'  # required for session use
-ADMIN_PASSWORD = "mvs0429"  # your chosen password
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
@@ -124,18 +86,14 @@ def admin():
 
     show_form = session.get('authenticated', False)
     return render_template('admin.html', show_form=show_form)
-')
-
 
 @app.route('/thankyou')
 def thankyou():
     return render_template('thankyou.html')
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -146,28 +104,24 @@ def submit():
     eastern = pytz.timezone('US/Eastern')
     submitted_at = datetime.now(eastern).strftime('%B %d, %Y at %I:%M %p')
 
-
     pdf_filename = "Vending Machine Drink Selections.pdf"
-
-
     generate_pdf(name, layout, pdf_filename, submitted_at)
-
     send_email(name, email, pdf_filename)
 
     return send_file(pdf_filename, as_attachment=True)
 
-
-
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
 
-    # Title line
+    # Title and name
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, 750, f"Vending Machine Drink Selections: {name}")
+    c.drawString(100, 750, "Vending Machine Drink Selections")
+    c.setFont("Helvetica", 12)
+    c.drawString(100, 735, f"Customer Name: {name}")
 
-    # Submission time (right-aligned)
+    # Submission time (top right)
     c.setFont("Helvetica", 10)
-    c.drawRightString(550, 735, f"Submitted: {submitted_at}")
+    c.drawRightString(550, 750, f"Submitted: {submitted_at}")
 
     # Drink slots
     y = 700
@@ -178,9 +132,6 @@ def generate_pdf(name, layout, filename, submitted_at):
         y -= 25
 
     c.save()
-
-
-from gmail_auth import send_message  # Make sure you create this module as explained earlier
 
 def send_email(name, customer_email, file_path):
     subject = "Drink Selections - Vending Machine(s)"
@@ -199,9 +150,6 @@ Monclus Vending Services LLC
 """
     recipients = [customer_email, 'sales@monclusvs.com']
     send_message('sales@monclusvs.com', recipients, subject, body, file_path)
-
-
-
 
 print("Server running. Available templates:", os.listdir("templates"))
 
