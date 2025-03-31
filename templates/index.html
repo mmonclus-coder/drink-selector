@@ -90,7 +90,8 @@
 
 <script>
   function checkToken() {
-    const token = document.mentById('accessToken').value.trim();
+    const token = document.getElementById('accessToken').value.trim();
+
 
     fetch('/validate_token', {
       method: 'POST',
