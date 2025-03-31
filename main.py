@@ -115,7 +115,7 @@ def submit():
     generate_pdf(name, layout, pdf_filename, submitted_at)
     send_email(name, email, pdf_filename)
 
-    return send_file(pdf_filename, as_attachment=True)
+    return '', 204  # No content response, just quietly succeeds
 
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
