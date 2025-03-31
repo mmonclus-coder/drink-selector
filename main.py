@@ -96,6 +96,12 @@ def thankyou():
 def home():
     return render_template('index.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('admin'))
+
+
 @app.route('/submit', methods=['POST'])
 def submit():
     data = request.json
