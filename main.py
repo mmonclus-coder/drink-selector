@@ -11,9 +11,6 @@ from datetime import datetime, timedelta
 import json
 import pytz
 
-
-
-
  # Stores token data like: {'482951': {'machine': 'DN501E', 'slots': 9, 'expires': ...}}
 
 machine_slot_counts = {
@@ -23,7 +20,6 @@ machine_slot_counts = {
 }
 
 app = Flask(__name__, template_folder='templates')
-
 
 
 TOKEN_FILE = "tokens.json"
@@ -146,9 +142,6 @@ def generate_pdf(name, layout, filename, submitted_at):
 
 
 from gmail_auth import send_message  # Make sure you create this module as explained earlier
-
-def send_email(name, customer_email, file_path):
-from gmail_auth import send_message
 
 def send_email(name, customer_email, file_path):
     subject = "Drink Selections - Vending Machine(s)"
