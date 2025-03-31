@@ -267,10 +267,29 @@ function generateDrinkSlots(slotCount) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, layout: slots })
       })
-      .then(res => res.text())
-      .then(alert)
-      .catch(err => alert('Error submitting: ' + err));
+      .then(res => {
+        if (!res.ok) throw new Error('Submission failed');
+        return res.blob();
+      })
+      .then(blob => {
+        // Trigger PDF download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "drink_layout.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    
+        // Redirect to thank-you page
+        window.location.href = "/thankyou";
+      })
+      .catch(err => {
+        console.error("❌ Submission error:", err);
+        alert("Something went wrong. Please try again.");
+      });
     };
+
 
   </script>
 </body>
