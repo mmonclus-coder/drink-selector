@@ -12,6 +12,9 @@ import json
 import pytz
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
+from flask import Response
+from flask import session  # make sure this is imported at the top
+
 
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
@@ -105,19 +108,23 @@ def validate_token():
         'slots': token_data['slots']
     }
 
-from flask import Response
 
-ADMIN_PASSWORD = "0429"  # 🔐 Set your desired password
 
-@app.route('/admin')
+app.secret_key = 'something_secret_and_random'  # required for session use
+ADMIN_PASSWORD = "mvs0429"  # your chosen password
+
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    auth = request.authorization
-    if not auth or auth.password != ADMIN_PASSWORD:
-        return Response(
-            'Unauthorized', 401,
-            {'WWW-Authenticate': 'Basic realm="Login Required"'}
-        )
-    return render_template('admin.html')
+    if request.method == 'POST':
+        password = request.form.get('password')
+        if password == ADMIN_PASSWORD:
+            session['authenticated'] = True
+        else:
+            return render_template('admin.html', error="Incorrect password", show_form=False)
+
+    show_form = session.get('authenticated', False)
+    return render_template('admin.html', show_form=show_form)
+')
 
 
 @app.route('/thankyou')
