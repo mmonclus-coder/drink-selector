@@ -286,19 +286,10 @@ function generateDrinkSlots(slotCount) {
         if (!res.ok) throw new Error('Submission failed');
         return res.blob();
       })
-      .then(blob => {
-        // Trigger PDF download
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-    
-        // Redirect to thank-you page
-        window.location.href = "/thankyou";
+      .then(() => {
+        window.location.href = "/thankyou";  // ✅ only redirect, no download
       })
+
       .catch(err => {
         console.error("❌ Submission error:", err);
         alert("Something went wrong. Please try again.");
