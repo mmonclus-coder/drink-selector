@@ -90,7 +90,7 @@
 
 <script>
   function checkToken() {
-    const token = document.getElementById('accessToken').value.trim();
+    const token = document.mentById('accessToken').value.trim();
 
     fetch('/validate_token', {
       method: 'POST',
@@ -260,17 +260,17 @@ function generateDrinkSlots(slotCount) {
       e.preventDefault();
       const name = e.target.customerName.value;
       const email = e.target.customerEmail.value;
-      
+    
       fetch('/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, layout: slots })
       })
-
       .then(res => res.text())
       .then(alert)
       .catch(err => alert('Error submitting: ' + err));
     };
+
   </script>
 </body>
 </html>
