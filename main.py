@@ -139,7 +139,7 @@ def generate_pdf(name, layout, filename, submitted_at):
 
     elements.extend([title, customer_info, submission_time, Spacer(1, 20)])
 
-    data = [["<b>Slot</b>", "<b>Drink Name</b>", "<b>Image</b>"]]  # Header row
+    data = [["Slot", "Selection", "Image"]]  # Header row
 
     for i, item in enumerate(layout):
         slot_number = f"Slot {i + 1}"
