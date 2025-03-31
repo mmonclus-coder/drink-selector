@@ -119,6 +119,8 @@ def submit():
 
 
 
+from reportlab.lib.utils import ImageReader
+
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
 
@@ -135,12 +137,24 @@ def generate_pdf(name, layout, filename, submitted_at):
     # Drink slots
     y = 700
     c.setFont("Helvetica-Bold", 12)
+
     for i, item in enumerate(layout):
         drink = item['name'] if item else "Empty"
         c.drawString(100, y, f"Slot {i + 1}: {drink}")
-        y -= 25
+
+        # Draw image if available
+        if item and item.get('img'):
+            try:
+                image_path = item['img'].replace("/static/", "static/")  # Convert to relative path
+                image = ImageReader(image_path)
+                c.drawImage(image, 400, y - 10, width=50, height=50, preserveAspectRatio=True)
+            except Exception as e:
+                print(f"⚠️ Error loading image for {drink}: {e}")
+
+        y -= 60  # Add extra space for image
 
     c.save()
+
 
 def send_email(name, customer_email, file_path):
     subject = "Drink Selections - Vending Machine(s)"
