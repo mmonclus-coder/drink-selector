@@ -115,7 +115,9 @@ def submit():
     generate_pdf(name, layout, pdf_filename, submitted_at)
     send_email(name, email, pdf_filename)
 
-    return '', 204  # No content response, just quietly succeeds
+    return redirect(url_for('thankyou'))
+
+
 
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
