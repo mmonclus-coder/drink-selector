@@ -30,6 +30,7 @@
     }
   
     .slot {
+      position: relative;
       width: 100px;
       height: 120px;
       background-size: contain;
@@ -215,6 +216,20 @@ function generateDrinkSlots(slotCount) {
           // Set background image
           slotDiv.style.backgroundImage = `url(${drink.img})`;
           slotDiv.title = drink.name;
+          
+          const label = document.createElement('div');
+          label.textContent = drink.name;
+          label.style.position = 'absolute';
+          label.style.bottom = '2px';
+          label.style.left = '0';
+          label.style.width = '100%';
+          label.style.fontSize = '12px';
+          label.style.background = 'rgba(255,255,255,0.7)';
+          label.style.fontWeight = 'bold';
+          
+          slotDiv.innerHTML = '';  // Clear any existing content
+          slotDiv.appendChild(label);
+
           modal.style.display = 'none';
         };
 
