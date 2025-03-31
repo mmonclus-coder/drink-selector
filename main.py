@@ -91,6 +91,9 @@ def validate_token():
 def admin():
     return render_template('admin.html')
 
+@app.route('/thankyou')
+def thankyou():
+    return render_template('thankyou.html')
 
 
 @app.route('/')
