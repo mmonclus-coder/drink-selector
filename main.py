@@ -10,6 +10,30 @@ import random
 from datetime import datetime, timedelta
 import json
 import pytz
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+
+def generate_pdf(name, layout, filename, submitted_at):
+    c = canvas.Canvas(filename, pagesize=letter)
+
+    # Title line
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(100, 750, f"Vending Machine Drink Selections: {name}")
+
+    # Submission time (right-aligned)
+    c.setFont("Helvetica", 10)
+    c.drawRightString(550, 735, f"Submitted: {submitted_at}")
+
+    # Drink slots
+    y = 700
+    c.setFont("Helvetica-Bold", 12)
+    for i, item in enumerate(layout):
+        drink = item['name'] if item else "Empty"
+        c.drawString(100, y, f"Slot {i + 1}: {drink}")
+        y -= 25
+
+    c.save()
+
 
  # Stores token data like: {'482951': {'machine': 'DN501E', 'slots': 9, 'expires': ...}}
 
@@ -116,7 +140,8 @@ def submit():
     submitted_at = datetime.now(eastern).strftime('%B %d, %Y at %I:%M %p')
 
 
-    pdf_filename = f"Vending Machine Drink Selections - {name.replace(' ', '_')}.pdf"
+    pdf_filename = "Vending Machine Drink Selections.pdf"
+
 
     generate_pdf(name, layout, pdf_filename, submitted_at)
 
@@ -128,16 +153,23 @@ def submit():
 
 def generate_pdf(name, layout, filename, submitted_at):
     c = canvas.Canvas(filename, pagesize=letter)
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(100, 750, f"Vending Machine Drink Selections: {name}")
-    c.drawRightString(500, 750, f"Submitted: {submitted_at}")
 
-    
+    # Title line
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(100, 750, f"Vending Machine Drink Selections: {name}")
+
+    # Submission time (right-aligned)
+    c.setFont("Helvetica", 10)
+    c.drawRightString(550, 735, f"Submitted: {submitted_at}")
+
+    # Drink slots
     y = 700
+    c.setFont("Helvetica-Bold", 12)
     for i, item in enumerate(layout):
         drink = item['name'] if item else "Empty"
         c.drawString(100, y, f"Slot {i + 1}: {drink}")
         y -= 25
+
     c.save()
 
 
