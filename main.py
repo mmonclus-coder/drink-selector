@@ -138,7 +138,7 @@ def send_email(name, customer_email, file_path):
         msg.add_attachment(f.read(), maintype='application', subtype='pdf', filename=file_path)
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login('your_email@example.com', 'your_app_password')  # Replace with real app password
+        smtp.login('sales@monclusvs.com', 'Sales12345!!')  # Replace with real app password
         smtp.send_message(msg)
 
 
