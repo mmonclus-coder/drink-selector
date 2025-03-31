@@ -120,45 +120,58 @@ def submit():
 
 
 from reportlab.lib.utils import ImageReader
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 def generate_pdf(name, layout, filename, submitted_at):
-    c = canvas.Canvas(filename, pagesize=letter)
+    from reportlab.platypus import SimpleDocTemplate
+    from reportlab.lib.pagesizes import letter
 
-    # Title and name
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, 750, "Vending Machine Drink Selections")
-    c.setFont("Helvetica", 12)
-    c.drawString(50, 735, f"Customer Name: {name}")
+    doc = SimpleDocTemplate(filename, pagesize=letter)
+    elements = []
 
-    # Submission time (top right)
-    c.setFont("Helvetica", 10)
-    c.drawRightString(550, 750, f"Submitted: {submitted_at}")
+    styles = getSampleStyleSheet()
+    title = Paragraph(f"<b>Vending Machine Drink Selections</b>", styles['Title'])
+    customer_info = Paragraph(f"Customer Name: {name}", styles['Normal'])
+    submission_time = Paragraph(f"<para alignment='right'><b>Submitted:</b> {submitted_at}</para>", styles['Normal'])
 
-    # Setup grid positions
-    start_y = 700
-    row_height = 70
-    text_x = 50
-    image_x = 350
-    image_size = 50
+    elements.extend([title, customer_info, submission_time, Spacer(1, 20)])
+
+    data = [["<b>Slot</b>", "<b>Drink Name</b>", "<b>Image</b>"]]  # Header row
 
     for i, item in enumerate(layout):
-        y = start_y - i * row_height
+        slot_number = f"Slot {i + 1}"
         drink_name = item['name'] if item else "Empty"
 
-        # Left column: Slot and name
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(text_x, y, f"Slot {i + 1}: {drink_name}")
-
-        # Right column: Image
+        # Try to load image if available
         if item and item.get('img'):
             try:
                 image_path = item['img'].replace("/static/", "static/")
-                image = ImageReader(image_path)
-                c.drawImage(image, image_x, y - 10, width=image_size, height=image_size, preserveAspectRatio=True)
-            except Exception as e:
-                print(f"⚠️ Error loading image for slot {i + 1}: {e}")
+                img = Image(image_path, width=50, height=50)
+            except:
+                img = Paragraph("Image Not Found", styles['Normal'])
+        else:
+            img = Paragraph("N/A", styles['Normal'])
 
-    c.save()
+        data.append([slot_number, drink_name, img])
+
+    # Create table
+    table = Table(data, colWidths=[80, 250, 80])
+    table.setStyle(TableStyle([
+        ('GRID', (0,0), (-1,-1), 1.5, colors.black),
+        ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('ALIGN', (2,1), (2,-1), 'CENTER'),  # Image column
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0,0), (-1,0), 12),
+        ('BOTTOMPADDING', (0,0), (-1,0), 8)
+    ]))
+
+    elements.append(table)
+    doc.build(elements)
+
 
 
 
